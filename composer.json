@@ -1,0 +1,19 @@
+{
+  "name": "juddling/phpstorm-url",
+  "type": "library",
+  "authors": [
+    {
+      "name": "James Judd",
+      "email": "james.judd@netsells.co.uk"
+    }
+  ],
+  "require": {
+    "illuminate/support": "^5.4",
+    "illuminate/console": "^5.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Juddling\\PHPStorm\\": "src/"
+    }
+  }
+}
