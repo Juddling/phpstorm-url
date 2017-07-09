@@ -7,13 +7,15 @@ This packages takes a URL, works out the controller and action that the route is
 ## Installation
 
 ```
-composer require juddling/phpstorm-url --dev
+composer require juddling/phpstorm-url:dev-master --dev
 ```
+
+Version needs to be specified because of minimum stability
 
 Be sure to include our service provider in your `app.php`:
 
 ```php
-\Juddling\PHPStorm\MusterServiceProvider::class
+Juddling\PHPStorm\LaunchUrlServiceProvider::class,
 ```
 
 ## Usage
