@@ -20,9 +20,24 @@ class LaunchUrlCommand extends Command
         $lineNumber = $this->lineNumber($action, $filename);
 
         // PHPStorm command line launcher
-        $launchCommand = sprintf("/usr/local/bin/phpstorm . --line %s %s", $lineNumber, $filename);
+        $launchCommand = sprintf("%s . --line %s %s", $this->findLauncher(), $lineNumber, $filename);
         $this->info($launchCommand);
         shell_exec($launchCommand);
+    }
+
+    private function findLauncher() {
+        $paths = [
+            "/usr/local/bin/phpstorm",
+            "/usr/local/bin/pstorm"
+        ];
+
+        foreach($paths as $path) {
+            if (file_exists($path)) {
+                return $path;
+            }
+        }
+
+        throw new \RuntimeException("Couldn't find PHPStorm launcher, have you created one?");
     }
 
     private function lineNumber($functionName, $fileName) {

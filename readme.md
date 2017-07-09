@@ -21,3 +21,7 @@ Juddling\PHPStorm\LaunchUrlServiceProvider::class,
 ## Usage
 
 `php artisan phpstorm:url http://someproject.dev/forum/comment/add`
+
+Would recommend setting up a bash alias like the following:
+
+`alias purl="php artisan phpstorm:url"`
