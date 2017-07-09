@@ -4,6 +4,7 @@
 namespace Juddling\PHPStorm;
 
 
+use Composer\Autoload\ClassLoader;
 use Illuminate\Console\Command;
 
 class LaunchUrlCommand extends Command
@@ -16,13 +17,20 @@ class LaunchUrlCommand extends Command
         \Route::dispatch(\Illuminate\Http\Request::create($this->argument('url'), 'GET'));
         list($controller, $action) = explode('@', \Route::currentRouteAction());
 
-        $filename = str_replace('\\', '/', $controller) . '.php';
+        $filename = $this->fileName($controller);
         $lineNumber = $this->lineNumber($action, $filename);
 
         // PHPStorm command line launcher
         $launchCommand = sprintf("%s . --line %s %s", $this->findLauncher(), $lineNumber, $filename);
         $this->info($launchCommand);
         shell_exec($launchCommand);
+    }
+
+    private function fileName($className)
+    {
+        /** @var ClassLoader $classLoader */
+        $classLoader = require __DIR__ . '/../../../../autoload.php';
+        return $classLoader->findFile($className);
     }
 
     private function findLauncher() {
