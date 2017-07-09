@@ -6,6 +6,7 @@ namespace Juddling\PHPStorm;
 
 use Composer\Autoload\ClassLoader;
 use Illuminate\Console\Command;
+use Illuminate\Routing\Route;
 
 class LaunchUrlCommand extends Command
 {
@@ -14,9 +15,13 @@ class LaunchUrlCommand extends Command
 
     public function fire()
     {
-        // Run a new request through the Laravel router
-        \Route::dispatch(\Illuminate\Http\Request::create($this->argument('url'), 'GET'));
-        list($controller, $action) = explode('@', \Route::currentRouteAction());
+        // Create a new request
+        $request = \Illuminate\Http\Request::create($this->argument('url'), 'GET');
+
+        /** @var Route $route */
+        $route = \Route::getRoutes()->match($request);
+
+        list($controller, $action) = explode('@', $route->getActionName());
 
         $filename = $this->fileName($controller);
         $lineNumber = $this->lineNumber($action, $filename);
@@ -34,7 +39,10 @@ class LaunchUrlCommand extends Command
     {
         /** @var ClassLoader $classLoader */
         $classLoader = require __DIR__ . '/../../../../autoload.php';
-        return $classLoader->findFile($className);
+        // leading backslash will cause Composer to not find the class
+        $className = trim($className, '\\');
+
+        return $classLoader->getClassMap()[$className];
     }
 
     /**
@@ -65,7 +73,9 @@ class LaunchUrlCommand extends Command
         $matches = [];
 
         if (!preg_match("/([0-9]+)/", $grepOutput, $matches)) {
-            throw new RuntimeException("Couldn't find function in file");
+            // function couldn't be found in the file, it could have been defined in a parent class
+            // lets just open the file at line 0
+            return 1;
         }
 
         return $matches[0];
