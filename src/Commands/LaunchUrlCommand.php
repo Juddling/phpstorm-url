@@ -14,18 +14,22 @@ class LaunchUrlCommand extends Command
 
     public function fire()
     {
+        // Run a new request through the Laravel router
         \Route::dispatch(\Illuminate\Http\Request::create($this->argument('url'), 'GET'));
         list($controller, $action) = explode('@', \Route::currentRouteAction());
 
         $filename = $this->fileName($controller);
         $lineNumber = $this->lineNumber($action, $filename);
 
-        // PHPStorm command line launcher
+        // Execute the command to open the file
         $launchCommand = sprintf("%s . --line %s %s", $this->findLauncher(), $lineNumber, $filename);
         $this->info($launchCommand);
         shell_exec($launchCommand);
     }
 
+    /**
+     * Given a class name, it will return the file name and path, using the initialised Composer class loader
+     */
     private function fileName($className)
     {
         /** @var ClassLoader $classLoader */
@@ -33,13 +37,17 @@ class LaunchUrlCommand extends Command
         return $classLoader->findFile($className);
     }
 
-    private function findLauncher() {
+    /**
+     * Returns the path to the installed PHPstorm command line launcher
+     */
+    private function findLauncher()
+    {
         $paths = [
-            "/usr/local/bin/phpstorm",
-            "/usr/local/bin/pstorm"
+            "/usr/local/bin/pstorm",
+            "/usr/local/bin/phpstorm"
         ];
 
-        foreach($paths as $path) {
+        foreach ($paths as $path) {
             if (file_exists($path)) {
                 return $path;
             }
@@ -48,7 +56,11 @@ class LaunchUrlCommand extends Command
         throw new \RuntimeException("Couldn't find PHPStorm launcher, have you created one?");
     }
 
-    private function lineNumber($functionName, $fileName) {
+    /**
+     * Returns the line number in which a function is defined in a given file
+     */
+    private function lineNumber($functionName, $fileName)
+    {
         $grepOutput = shell_exec("grep -n \"function $functionName\" $fileName");
         $matches = [];
 

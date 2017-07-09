@@ -2,7 +2,7 @@
 
 Note, this is only for Laravel projects.
 
-This packages takes a URL, works out the controller and action that the route is bound to, and opens that file and line in PHPStorm
+This package takes a URL, works out the controller and action that the route is bound to, and opens that file and line in PHPStorm
 
 ## Installation
 
