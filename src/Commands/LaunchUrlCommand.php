@@ -13,7 +13,7 @@ class LaunchUrlCommand extends Command
 
     public function fire()
     {
-        \Route::dispatch(Illuminate\Http\Request::create($url, 'GET'));
+        \Route::dispatch(\Illuminate\Http\Request::create($this->argument('url'), 'GET'));
         list($controller, $action) = explode('@', \Route::currentRouteAction());
 
         $filename = str_replace('\\', '/', $controller) . '.php';
