@@ -67,7 +67,7 @@ class LaunchUrlCommand extends Command
     /**
      * Returns the line number in which a function is defined in a given file
      */
-    private function lineNumber($functionName, $fileName)
+    public function lineNumber($functionName, $fileName)
     {
         $grepOutput = shell_exec("grep -n \"function $functionName\" $fileName");
         $matches = [];
