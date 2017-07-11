@@ -69,15 +69,17 @@ class LaunchUrlCommand extends Command
      */
     public function lineNumber($functionName, $fileName)
     {
-        $grepOutput = shell_exec("grep -n \"function $functionName\" $fileName");
-        $matches = [];
+        $file = fopen($fileName, 'r');
 
-        if (!preg_match("/([0-9]+)/", $grepOutput, $matches)) {
-            // function couldn't be found in the file, it could have been defined in a parent class
-            // lets just open the file at line 0
-            return 1;
+        $lineNumber = 1;
+        while ($line = fgets($file)) {
+            if (preg_match("/function $functionName/", $line)) {
+                return $lineNumber;
+            }
+
+            $lineNumber++;
         }
 
-        return $matches[0];
+        return 1;
     }
 }
