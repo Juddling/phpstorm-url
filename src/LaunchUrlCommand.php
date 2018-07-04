@@ -43,7 +43,7 @@ class LaunchUrlCommand extends Command
      */
     private function fileName($className)
     {
-        $projectComposerAutoloadFile = __DIR__ . '/../../../../autoload.php';
+        $projectComposerAutoloadFile = __DIR__ . '/../../../autoload.php';
 
         if (!file_exists($projectComposerAutoloadFile)) {
             throw new \RuntimeException("Couldn't open project's autoload file");
