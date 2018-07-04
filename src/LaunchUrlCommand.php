@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Juddling\PHPStorm;
-
 
 use Composer\Autoload\ClassLoader;
 use Illuminate\Console\Command;
@@ -13,7 +11,7 @@ class LaunchUrlCommand extends Command
     protected $signature = 'phpstorm:url {url}';
     protected $description = 'Takes a URL and opens its controller in PHPStorm';
 
-    public function fire()
+    public function handle()
     {
         // Create a new request
         $request = \Illuminate\Http\Request::create($this->argument('url'), 'GET');
@@ -32,13 +30,27 @@ class LaunchUrlCommand extends Command
         shell_exec($launchCommand);
     }
 
+    /*
+     * Keep this for compatibility with older Laravel versions
+     */
+    public function fire()
+    {
+        $this->handle();
+    }
+
     /**
      * Given a class name, it will return the file name and path, using the initialised Composer class loader
      */
     private function fileName($className)
     {
+        $projectComposerAutoloadFile = __DIR__ . '/../../../../autoload.php';
+
+        if (!file_exists($projectComposerAutoloadFile)) {
+            throw new \RuntimeException("Couldn't open project's autoload file");
+        }
+
         /** @var ClassLoader $classLoader */
-        $classLoader = require __DIR__ . '/../../../../autoload.php';
+        $classLoader = require $projectComposerAutoloadFile;
         // leading backslash will cause Composer to not find the class
         $className = trim($className, '\\');
 
