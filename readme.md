@@ -8,8 +8,10 @@ This package takes a URL, works out the controller and action that the route is 
 composer require juddling/phpstorm-url --dev
 ```
 
+As this is a developer tool it makes sense to only install it as a dev dependency.
+
 ### Add Service Provider (<= 5.4)
-Be sure to include our service provider in your `app.php`:
+Be sure to include our service provider in your `config/app.php`:
 
 ```php
 Juddling\PHPStorm\LaunchUrlServiceProvider::class,
